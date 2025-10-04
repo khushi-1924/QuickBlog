@@ -3,3 +3,5 @@ install react router dom
 install tailwind
 
 install (framer-motion)
+
+install moment

@@ -5,3 +5,5 @@ install tailwind
 install (framer-motion)
 
 install moment
+install react-loading-skeleton
+

@@ -106,7 +106,9 @@ const Blog = () => {
       </div>
 
     </div>
-  ) : <Skeleton count={10} />
+  ) : <div className='h-screen'>
+    <Loader />
+  </div>
 }
 
 export default Blog

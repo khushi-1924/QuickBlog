@@ -19,3 +19,6 @@ npm i express mongoose cors dotenv jsonwebtoken multer
 npm i nodemon --save-dev (installed in development environment)
 
 "type": "module",       //can use import export
+
+install imagekit
+

@@ -11,6 +11,8 @@ install react-loading-skeleton
 
 install quill
 
+install axios
+
 
 #server
 

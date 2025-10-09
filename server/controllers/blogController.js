@@ -61,7 +61,7 @@ export const getBlogById = async(req, res) => {
         if (!blog) {
             return res.status(404).json({ success: false, message: 'Blog Not Found' });
         }
-        res.status(200).json({ success: true, message: blog });
+        res.status(200).json({ success: true, blog });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -97,7 +97,7 @@ export const togglePublish = async(req, res) => {
 
 export const addComment = async(req, res) => {
     try {
-        const { blogs, name, content } = req.body;
+        const { blog, name, content } = req.body;
 
         await Comment.create({ blog, name, content });
 
@@ -115,5 +115,6 @@ export const getBlogComments = async(req, res) => {
         res.status(200).json({ success: true, comments });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
+        console.log(error);
     }
 }

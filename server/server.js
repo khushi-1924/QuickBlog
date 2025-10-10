@@ -10,7 +10,11 @@ const app = express();
 await connectDB();
 
 // middlewares
-app.use(cors());
+app.use(cors({
+  origin: ["https://quick-blog-1ovl-q18bhc8xq-khushis-projects-37ceace1.vercel.app"], // your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes

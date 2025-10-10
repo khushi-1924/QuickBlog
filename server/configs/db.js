@@ -6,7 +6,7 @@ const connectDB = async () => {
         )
         await mongoose.connect(`${process.env.MONGODB_URI}/quickBlog`)
     } catch (error) {
-        console.log(error.message)
+        console.log("database connection unsuccessful",  error.message)
     }
 }
 

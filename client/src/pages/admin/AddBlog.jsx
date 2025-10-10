@@ -3,11 +3,13 @@ import { assets, blogCategories } from '../../assets/assets'
 import Quill from 'quill'
 import { useAppContext } from '../../context/AppContext'
 import toast from 'react-hot-toast'
+import { parse } from 'marked'
 
 const AddBlog = () => {
 
   const { axios } = useAppContext()
   const [isAdding, setIsAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const editorRef = useRef(null);
   const quillRef = useRef(null);
@@ -19,7 +21,6 @@ const AddBlog = () => {
   const [isPublished, setIsPublished] = useState(false);
 
   const onSubmitHandler = async(e) => {
-    
     try {
       e.preventDefault();
       setIsAdding(true);
@@ -53,7 +54,23 @@ const AddBlog = () => {
   }
 
   const generateContent = async() => {
+    if (!title)
+      return toast.error('Please enter your title')
 
+    try {
+      setLoading(true);
+      const { data } = await axios.post('/api/blog/generate', { prompt: title });
+
+      if (data.success) {
+        quillRef.current.root.innerHTML = parse(data.content)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -81,7 +98,11 @@ const AddBlog = () => {
         <p className='mt-4'>Blog Description</p>
         <div className='max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative'>
           <div ref={editorRef}></div>
-          <button onClick={generateContent} type="button" className='absolute bottom-2 right-2 ml-2 text-xs px-4 py-1.5 rounded-3xl border border-primary/40 text-primary hover:bg-primary/10 transition-all cursor-pointer flex gap-2'><img src={assets.star_icon} alt="star_icon" /> Generate with AI</button>
+      
+          <button onClick={generateContent} disabled={loading} type="button" className={`absolute bottom-7 sm:bottom-2 right-2 ml-2 text-xs px-4 py-1.5 rounded-3xl border transition-all flex gap-2 ${loading ? 'border-gray-700 text-gray-500' : 'border-primary/40 text-primary hover:bg-primary/10 cursor-pointer'}`}>
+          {!loading && 
+          <img src={assets.star_icon} alt="star_icon" />}
+          {loading ? 'Generating Content...' : 'Generate with AI'}</button>
         </div>
 
         <p className='mt-4'>Blog Category</p>

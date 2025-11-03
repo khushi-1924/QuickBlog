@@ -2,28 +2,40 @@ import React, { useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
-const Login = () => {
+const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { axios, setToken } = useAppContext();
+  //   const { axios, setToken } = useAppContext();
+  const { axios } = useAppContext();
   const { navigate } = useAppContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // const { data } = await axios.post('/api/admin/login', { email, password });
-      const { data } = await axios.post('/api/user/login', { email, password });
+      const { data } = await axios.post("/api/user/register", {
+        name,
+        email,
+        password,
+      });
 
       if (data.success) {
-        setToken(data.token);
-        localStorage.setItem('token', data.token);
-        axios.defaults.headers.common['Authorization'] = data.token;
-      }
-      else {
+        navigate("/admin");
+      } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      // Check if backend sent a message
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error(error.message);
+      }
     }
   };
   return (
@@ -32,17 +44,27 @@ const Login = () => {
         <div className="flex flex-col items-center justify-center">
           <div className="w-full py-6 text-center">
             <h1 className="text-3xl font-bold">
-              <span className="text-primary">User</span> Login
+              <span className="text-primary">User</span> Signup
             </h1>
-            <p className="font-light">
-              Login and start sharing your thoughts
-            </p>
+            <p className="font-light">Signin and start sharing your thoughts</p>
           </div>
 
           <form
             onSubmit={handleSubmit}
             className="mt-6 w-full sm:max-w-md text-gray-600"
           >
+            <div className="flex flex-col">
+              <label>Name</label>
+              <input
+                type="text"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                placeholder="Enter name"
+                className="border-b-2 border-gray-300 p-2 outline-none mb-6"
+                required
+              />
+            </div>
+
             <div className="flex flex-col">
               <label>Email</label>
               <input
@@ -68,14 +90,22 @@ const Login = () => {
             </div>
 
             <div>
-              <p className="text-center text-sm mb-4">Not a user? <span onClick={()=>navigate('/register')} className="text-primary hover:underline hover:cursor-pointer">Sign up</span></p>
+              <p className="text-center text-sm mb-4">
+                Already a user?{" "}
+                <span
+                  onClick={() => navigate("/admin")}
+                  className="text-primary hover:underline hover:cursor-pointer"
+                >
+                  Login
+                </span>
+              </p>
             </div>
 
             <button
               type="submit"
               className="w-full py-3 font-medium bg-primary text-white rounded cursor-pointer hover:bg-primary/90 transition-all"
             >
-              Login
+              Sign up
             </button>
           </form>
         </div>
@@ -84,4 +114,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
